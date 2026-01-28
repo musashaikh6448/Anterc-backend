@@ -8,6 +8,7 @@ import serviceRoutes from './routes/serviceRoutes.js';
 import themeRoutes from './routes/themeRoutes.js';
 import galleryRoutes from './routes/galleryRoutes.js';
 import searchRoutes from './routes/searchRoutes.js';
+import contactRoutes from './routes/contactRoutes.js';
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use('/api/services', serviceRoutes);
 app.use('/api/theme', themeRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Basic Route
 app.get('/', (req, res) => {

@@ -12,6 +12,11 @@ import {
     deleteAdmin
 } from '../controller/adminController.js';
 import {
+    getAllContactEnquiries,
+    getContactEnquiryById,
+    deleteContactEnquiry
+} from '../controller/contactController.js';
+import {
     getAllServicesAdmin,
     createService,
     updateService,
@@ -43,6 +48,11 @@ router.get('/statistics', protect, admin, getStatistics);
 router.get('/enquiries', protect, admin, getAllEnquiries);
 router.put('/enquiry/:id', protect, admin, updateEnquiryStatus);
 router.delete('/enquiry/:id', protect, admin, deleteEnquiry);
+
+// Contact Enquiry routes
+router.get('/contact-enquiries', protect, admin, getAllContactEnquiries);
+router.get('/contact-enquiries/:id', protect, admin, getContactEnquiryById);
+router.delete('/contact-enquiries/:id', protect, admin, deleteContactEnquiry);
 
 // Customer routes
 router.get('/customers', protect, admin, getAllCustomers);
