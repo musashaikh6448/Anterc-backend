@@ -42,7 +42,9 @@ import User from '../models/User.js';
 // @access  Private
 export const getMyEnquiries = async (req, res) => {
     try {
-        const enquiries = await Enquiry.find({ user: req.user._id }).sort({ createdAt: -1 });
+        const enquiries = await Enquiry.find({ user: req.user._id })
+            .populate('technician', 'name phone specialization availabilityStatus')
+            .sort({ createdAt: -1 });
         res.json(enquiries);
     } catch (error) {
         res.status(500).json({ message: error.message });

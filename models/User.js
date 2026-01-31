@@ -16,8 +16,17 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['admin', 'customer'],
+        enum: ['admin', 'customer', 'technician'],
         default: 'customer'
+    },
+    specialization: {
+        type: String,
+        default: ''
+    },
+    availabilityStatus: {
+        type: String,
+        enum: ['available', 'busy', 'off-duty'],
+        default: 'available'
     },
     address: {
         type: String,

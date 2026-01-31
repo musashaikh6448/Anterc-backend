@@ -5,6 +5,7 @@ import {
     getAllEnquiries,
     updateEnquiryStatus,
     uploadInvoice,
+    assignTechnician,
     deleteEnquiry,
     getAllCustomers,
     getAllAdmins,
@@ -49,6 +50,7 @@ router.get('/statistics', protect, admin, getStatistics);
 // Enquiry routes
 router.get('/enquiries', protect, admin, getAllEnquiries);
 router.put('/enquiry/:id', protect, admin, updateEnquiryStatus);
+router.put('/enquiry/:id/assign', protect, admin, assignTechnician);
 router.post('/enquiry/:id/invoice', protect, admin, upload.single('invoice'), uploadInvoice);
 router.delete('/enquiry/:id', protect, admin, deleteEnquiry);
 

@@ -4,6 +4,7 @@ import cors from 'cors';
 import connectDB from './db/connection.js';
 import customerRoutes from './routes/customerRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import technicianRoutes from './routes/technicianRoutes.js';
 import serviceRoutes from './routes/serviceRoutes.js';
 import themeRoutes from './routes/themeRoutes.js';
 import galleryRoutes from './routes/galleryRoutes.js';
@@ -27,6 +28,7 @@ connectDB();
 // Routes
 app.use('/api/customer', customerRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/technicians', technicianRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/theme', themeRoutes);
 app.use('/api/gallery', galleryRoutes);

@@ -97,7 +97,7 @@ export const uploadInvoice = async (req, res) => {
         
         console.log('Received file for upload:', file.originalname, file.mimetype);
 
-        console.log('Received file for upload:', file.originalname, file.mimetype);
+
 
         // Upload to Supabase instead of Cloudinary
         const imageUrl = await uploadFileToSupabase(file.buffer, file.originalname, file.mimetype);
@@ -115,6 +115,43 @@ export const uploadInvoice = async (req, res) => {
         res.json(updatedEnquiry);
     } catch (error) {
         res.status(500).json({ message: 'Error uploading invoice', error: error.message });
+    }
+};
+
+// @desc    Assign technician to enquiry
+// @route   PUT /api/admin/enquiry/:id/assign
+// @access  Private (Admin)
+export const assignTechnician = async (req, res) => {
+    try {
+        const { technicianId } = req.body;
+        const { id } = req.params;
+
+        const enquiry = await Enquiry.findById(id);
+        if (!enquiry) {
+            return res.status(404).json({ message: 'Enquiry not found' });
+        }
+
+        const technician = await User.findById(technicianId);
+        if (!technician || technician.role !== 'technician') {
+            return res.status(404).json({ message: 'Technician not found or invalid' });
+        }
+
+        enquiry.technician = technicianId;
+        
+        // Auto-update status to 'technician assigned' if it was pending
+        if (enquiry.status === 'pending') {
+            enquiry.status = 'technician assigned';
+        }
+
+        await enquiry.save();
+
+        const updatedEnquiry = await Enquiry.findById(id)
+            .populate('user', 'name phone')
+            .populate('technician', 'name phone specialization');
+
+        res.json(updatedEnquiry);
+    } catch (error) {
+        res.status(500).json({ message: 'Error assigning technician', error: error.message });
     }
 };
 

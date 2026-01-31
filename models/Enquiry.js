@@ -6,6 +6,11 @@ const enquirySchema = new mongoose.Schema({
         required: true,
         ref: 'User'
     },
+    technician: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: null
+    },
     serviceType: {
         type: String,
         required: true
