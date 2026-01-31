@@ -4,8 +4,8 @@ import User from '../models/User.js';
 // @desc    Create a new enquiry
 // @route   POST /api/customer/enquiry
 // @access  Private
-export const createEnquiry = async (req, res) => {
-    const { serviceType, applianceType, message, address, city, brand } = req.body;
+    export const createEnquiry = async (req, res) => {
+    const { serviceType, applianceType, message, address, city, brand, landmark } = req.body;
 
     try {
         // Update user's common details if provided
@@ -21,7 +21,13 @@ export const createEnquiry = async (req, res) => {
             user: req.user._id,
             serviceType,
             applianceType,
-            message
+            message,
+            address,
+            landmark,
+            city,
+            state: req.body.state,
+            pincode: req.body.pincode,
+            brand
         });
 
         const createdEnquiry = await enquiry.save();

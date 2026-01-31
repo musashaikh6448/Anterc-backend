@@ -18,6 +18,30 @@ const enquirySchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    address: {
+        type: String,
+        required: true
+    },
+    landmark: {
+        type: String,
+        default: ''
+    },
+    city: {
+        type: String,
+        required: true
+    },
+    state: {
+        type: String,
+        required: true
+    },
+    pincode: {
+        type: String,
+        required: true
+    },
+    brand: {
+        type: String,
+        default: ''
+    },
     status: {
         type: String,
         enum: ['pending', 'in-progress', 'completed', 'cancelled'],
