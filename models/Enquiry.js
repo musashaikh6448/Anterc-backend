@@ -46,6 +46,10 @@ const enquirySchema = new mongoose.Schema({
         type: String,
         enum: ['pending', 'in-progress', 'completed', 'cancelled'],
         default: 'pending'
+    },
+    invoiceUrl: {
+        type: String,
+        default: ''
     }
 }, {
     timestamps: true

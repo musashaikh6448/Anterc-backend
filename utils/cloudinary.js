@@ -32,6 +32,80 @@ export const uploadImage = async (imageData) => {
     }
 };
 
+// Helper function to upload document (PDF or Image)
+export const uploadDocument = async (fileData) => {
+    try {
+        if (!fileData) return null;
+
+        // If it's a base64 string
+        if (fileData.startsWith('data:')) {
+            const isPdf = fileData.startsWith('data:application/pdf');
+            
+            const uploadOptions = {
+                folder: 'anterc-invoices',
+                resource_type: 'auto', 
+                type: 'upload',
+                access_mode: 'public'
+            };
+
+            // For raw files, it's good to ensure extension for proper headers
+            if (isPdf) {
+                uploadOptions.use_filename = true;
+                uploadOptions.unique_filename = true;
+                uploadOptions.filename_override = `invoice_${Date.now()}.pdf`;
+            }
+
+            const result = await cloudinary.uploader.upload(fileData, uploadOptions);
+            return result.secure_url;
+        }
+        
+        // If it's already a URL, return as is
+        if (typeof fileData === 'string' && fileData.startsWith('http')) {
+            return fileData;
+        }
+        
+        return null;
+    } catch (error) {
+        console.error('Cloudinary document upload error:', error);
+        throw new Error('Failed to upload document: ' + error.message);
+    }
+};
+
+// Helper function to upload document buffer (for multer)
+export const uploadDocumentBuffer = (buffer, originalname, mimetype) => {
+    return new Promise((resolve, reject) => {
+        const isPdf = (mimetype === 'application/pdf') || originalname.toLowerCase().trim().endsWith('.pdf');
+        console.log('Uploading file:', originalname, 'MIME:', mimetype, 'Is PDF:', isPdf);
+        
+        const uploadOptions = {
+            folder: 'anterc-invoices',
+            resource_type: isPdf ? 'raw' : 'auto', // Force raw for PDFs
+            type: 'upload',
+            access_mode: 'public'
+        };
+
+        if (isPdf) {
+            uploadOptions.use_filename = true;
+            uploadOptions.unique_filename = true;
+            uploadOptions.filename_override = originalname; // Multer gives us the original name
+        }
+
+        const stream = cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
+            if (error) {
+                console.error('Cloudinary stream upload error:', error);
+                reject(new Error('Cloudinary upload failed: ' + error.message));
+            } else {
+                console.log('Cloudinary upload success:', result.secure_url);
+                resolve(result.secure_url);
+            }
+        });
+
+        stream.end(buffer);
+    });
+};
+
+
+
 // Helper function to delete image
 export const deleteImage = async (imageUrl) => {
     try {

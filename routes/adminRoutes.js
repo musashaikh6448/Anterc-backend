@@ -4,6 +4,7 @@ import {
     getStatistics,
     getAllEnquiries,
     updateEnquiryStatus,
+    uploadInvoice,
     deleteEnquiry,
     getAllCustomers,
     getAllAdmins,
@@ -34,6 +35,7 @@ import {
     deleteGalleryImage
 } from '../controller/galleryController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
+import upload from '../utils/multer.js';
 
 const router = express.Router();
 
@@ -47,6 +49,7 @@ router.get('/statistics', protect, admin, getStatistics);
 // Enquiry routes
 router.get('/enquiries', protect, admin, getAllEnquiries);
 router.put('/enquiry/:id', protect, admin, updateEnquiryStatus);
+router.post('/enquiry/:id/invoice', protect, admin, upload.single('invoice'), uploadInvoice);
 router.delete('/enquiry/:id', protect, admin, deleteEnquiry);
 
 // Contact Enquiry routes

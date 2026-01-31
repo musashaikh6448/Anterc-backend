@@ -1,5 +1,6 @@
 import User from '../models/User.js';
 import Enquiry from '../models/Enquiry.js';
+import { uploadDocument, uploadDocumentBuffer } from '../utils/cloudinary.js';
 
 // @desc    Get dashboard statistics
 // @route   GET /api/admin/statistics
@@ -47,10 +48,27 @@ export const getAllEnquiries = async (req, res) => {
 // @access  Private (Admin)
 export const updateEnquiryStatus = async (req, res) => {
     try {
-        const { status } = req.body;
+        const { status, invoiceUrl } = req.body;
+        const updateData = {};
+
+        if (status) updateData.status = status;
+        
+        if (invoiceUrl) {
+            // If it's a base64 string, upload it
+            if (invoiceUrl.startsWith('data:')) {
+                const uploadedUrl = await uploadDocument(invoiceUrl);
+                if (uploadedUrl) {
+                    updateData.invoiceUrl = uploadedUrl;
+                }
+            } else {
+                // Determine if we should clear it or keep it (if passed as string)
+                updateData.invoiceUrl = invoiceUrl;
+            }
+        }
+
         const enquiry = await Enquiry.findByIdAndUpdate(
             req.params.id,
-            { status },
+            updateData,
             { new: true }
         ).populate('user', 'name phone');
 
@@ -64,9 +82,43 @@ export const updateEnquiryStatus = async (req, res) => {
     }
 };
 
+// @desc    Upload invoice for enquiry
+// @route   POST /api/admin/enquiry/:id/invoice
+// @access  Private (Admin)
+export const uploadInvoice = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const file = req.file;
+
+        if (!file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+        
+        console.log('Received file for upload:', file.originalname, file.mimetype);
+
+        const imageUrl = await uploadDocumentBuffer(file.buffer, file.originalname, file.mimetype);
+
+        const updatedEnquiry = await Enquiry.findByIdAndUpdate(
+            id,
+            { invoiceUrl: imageUrl },
+            { new: true }
+        ).populate('user', 'name phone');
+
+        if (!updatedEnquiry) {
+            return res.status(404).json({ message: 'Enquiry not found' });
+        }
+
+        res.json(updatedEnquiry);
+    } catch (error) {
+        res.status(500).json({ message: 'Error uploading invoice', error: error.message });
+    }
+};
+
 // @desc    Delete enquiry
 // @route   DELETE /api/admin/enquiry/:id
 // @access  Private (Admin)
+
+
 export const deleteEnquiry = async (req, res) => {
     try {
         const enquiry = await Enquiry.findById(req.params.id);
