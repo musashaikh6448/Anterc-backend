@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import Enquiry from '../models/Enquiry.js';
-import { uploadDocument, uploadDocumentBuffer } from '../utils/cloudinary.js';
+import { uploadDocument } from '../utils/cloudinary.js';
+import { uploadFileToSupabase } from '../utils/supabase.js';
 
 // @desc    Get dashboard statistics
 // @route   GET /api/admin/statistics
@@ -96,7 +97,10 @@ export const uploadInvoice = async (req, res) => {
         
         console.log('Received file for upload:', file.originalname, file.mimetype);
 
-        const imageUrl = await uploadDocumentBuffer(file.buffer, file.originalname, file.mimetype);
+        console.log('Received file for upload:', file.originalname, file.mimetype);
+
+        // Upload to Supabase instead of Cloudinary
+        const imageUrl = await uploadFileToSupabase(file.buffer, file.originalname, file.mimetype);
 
         const updatedEnquiry = await Enquiry.findByIdAndUpdate(
             id,
