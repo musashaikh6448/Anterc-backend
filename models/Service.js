@@ -48,7 +48,6 @@ const serviceSchema = new mongoose.Schema({
             'Chimneys',
             'Microwave oven',
             'Electric Induction',
-            'Air Purifier',
             'Geysers',
             'Home theatre/ Sound box',
             'Inverter Batteries',
