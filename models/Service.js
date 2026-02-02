@@ -23,7 +23,17 @@ const subServiceSchema = new mongoose.Schema({
     },
     issuesResolved: [{
         type: String
-    }]
+    }],
+    rating: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+    numReviews: {
+        type: Number,
+        required: true,
+        default: 0
+    }
 }, { _id: true });
 
 const serviceSchema = new mongoose.Schema({

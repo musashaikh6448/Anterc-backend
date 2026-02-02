@@ -5,7 +5,7 @@ import User from '../models/User.js';
 // @route   POST /api/customer/enquiry
 // @access  Private
     export const createEnquiry = async (req, res) => {
-    const { serviceType, applianceType, message, address, city, brand, landmark, state, pincode, bookedFor } = req.body;
+    const { serviceType, applianceType, message, address, city, brand, landmark, state, pincode, bookedFor, items } = req.body;
 
     try {
         // Update user's common details if provided
@@ -19,8 +19,8 @@ import User from '../models/User.js';
 
         const enquiry = new Enquiry({
             user: req.user._id,
-            serviceType,
-            applianceType,
+            serviceType: serviceType || (items && items.length > 0 ? 'Multiple Services' : 'Service'),
+            applianceType: applianceType || (items && items.length > 0 ? 'Various' : 'Appliance'),
             message,
             address,
             landmark,
@@ -28,7 +28,8 @@ import User from '../models/User.js';
             state,
             pincode,
             brand,
-            bookedFor
+            bookedFor,
+            items: items || []
         });
 
         const createdEnquiry = await enquiry.save();

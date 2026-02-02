@@ -11,6 +11,9 @@ import galleryRoutes from './routes/galleryRoutes.js';
 import searchRoutes from './routes/searchRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
+import cartRoutes from './routes/cartRoutes.js';
+import reviewRoutes from './routes/reviewRoutes.js';
+import passwordResetRoutes from './routes/passwordResetRoutes.js';
 
 dotenv.config();
 
@@ -36,6 +39,9 @@ app.use('/api/gallery', galleryRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/password-reset', passwordResetRoutes);
 
 // Basic Route
 app.get('/', (req, res) => {

@@ -13,15 +13,24 @@ const enquirySchema = new mongoose.Schema({
     },
     serviceType: {
         type: String,
-        required: true
+        required: false // Made optional for cart-based enquiries
     },
     applianceType: {
         type: String, // e.g., 'Air Conditioner', 'TV'
-        required: true
+        required: false // Made optional for cart-based enquiries
     },
+    items: [{
+        serviceId: { type: mongoose.Schema.Types.ObjectId, ref: 'Service' },
+        subServiceId: String,
+        name: String,
+        category: String,
+        price: Number,
+        actualPrice: Number,
+        imageUrl: String,
+        quantity: { type: Number, default: 1 }
+    }],
     message: {
-        type: String,
-        required: true
+        type: String
     },
     address: {
         type: String,
@@ -60,6 +69,10 @@ const enquirySchema = new mongoose.Schema({
         type: String,
         enum: ['myself', 'others'],
         default: 'myself'
+    },
+    isReviewed: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

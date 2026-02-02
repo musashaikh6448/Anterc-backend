@@ -13,11 +13,8 @@ export const getTechnicians = async (req, res) => {
     }
 };
 
-// @desc    Create a technician
-// @route   POST /api/technicians
-// @access  Private (Admin)
 export const createTechnician = async (req, res) => {
-    const { name, phone, password, specialization } = req.body;
+    const { name, phone, specialization } = req.body;
 
     if (!phone || !/^\d{10}$/.test(phone)) {
         return res.status(400).json({ message: 'Phone number must be exactly 10 digits' });
@@ -30,10 +27,13 @@ export const createTechnician = async (req, res) => {
             return res.status(400).json({ message: 'User with this phone number already exists' });
         }
 
+        // Generate default password as phone number
+        const defaultPassword = phone;
+
         const technician = await User.create({
             name,
             phone,
-            password,
+            password: defaultPassword,
             role: 'technician',
             specialization: specialization || 'General',
             availabilityStatus: 'available'
@@ -50,7 +50,7 @@ export const createTechnician = async (req, res) => {
 // @route   PUT /api/technicians/:id
 // @access  Private (Admin)
 export const updateTechnician = async (req, res) => {
-    const { name, phone, password, specialization, availabilityStatus } = req.body;
+    const { name, phone, specialization, availabilityStatus } = req.body;
 
     try {
         if (phone && !/^\d{10}$/.test(phone)) {
@@ -66,10 +66,6 @@ export const updateTechnician = async (req, res) => {
         }
 
         const updateData = { name, phone, specialization, availabilityStatus };
-        if (password) {
-             const salt = await bcrypt.genSalt(10);
-            updateData.password = await bcrypt.hash(password, salt);
-        }
 
         // Filter out undefined values
         Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
