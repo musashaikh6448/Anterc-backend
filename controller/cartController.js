@@ -21,7 +21,7 @@ export const getCart = async (req, res) => {
 // @access  Private
 export const addToCart = async (req, res) => {
     try {
-        const { serviceId, subServiceId, name, category, price, actualPrice, imageUrl } = req.body;
+        const { serviceId, subServiceId, name, category, price, actualPrice, imageUrl, quantity } = req.body;
         
         let cart = await Cart.findOne({ user: req.user._id });
         
@@ -46,7 +46,7 @@ export const addToCart = async (req, res) => {
                 price,
                 actualPrice,
                 imageUrl,
-                quantity: 1
+                quantity: quantity || 1 // Use provided quantity or default to 1
             });
         }
         
@@ -69,6 +69,36 @@ export const removeFromCart = async (req, res) => {
         // Filter out the item
         cart.items = cart.items.filter(item => item.subServiceId !== req.params.itemId);
         
+        await cart.save();
+        res.json(cart);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Update cart item quantity
+// @route   PUT /api/cart/update/:itemId
+// @access  Private
+export const updateCartItemQuantity = async (req, res) => {
+    try {
+        const { quantity } = req.body;
+        const { itemId } = req.params;
+
+        // Validate quantity
+        if (!quantity || quantity < 1) {
+            return res.status(400).json({ message: 'Quantity must be at least 1' });
+        }
+
+        const cart = await Cart.findOne({ user: req.user._id });
+        if (!cart) return res.status(404).json({ message: 'Cart not found' });
+
+        // Find the item and update quantity
+        const item = cart.items.find(item => item.subServiceId === itemId);
+        if (!item) {
+            return res.status(404).json({ message: 'Item not found in cart' });
+        }
+
+        item.quantity = quantity;
         await cart.save();
         res.json(cart);
     } catch (error) {
