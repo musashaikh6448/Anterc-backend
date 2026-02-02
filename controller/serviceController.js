@@ -67,6 +67,7 @@ export const createService = async (req, res) => {
                     name: subService.name,
                     description: subService.description,
                     price: Number(subService.price) || 0,
+                    actualPrice: subService.actualPrice ? Number(subService.actualPrice) : undefined,
                     imageUrl: subImageUrl,
                     issuesResolved: subService.issuesResolved || []
                 };
@@ -137,6 +138,7 @@ export const updateService = async (req, res) => {
                     name: subService.name,
                     description: subService.description,
                     price: Number(subService.price) || 0,
+                    actualPrice: subService.actualPrice ? Number(subService.actualPrice) : undefined,
                     imageUrl: subImageUrl,
                     issuesResolved: subService.issuesResolved || []
                 };
@@ -219,6 +221,28 @@ export const toggleServiceStatus = async (req, res) => {
         }
 
         service.isActive = !service.isActive;
+        await service.save();
+
+        res.json(service);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+// @desc    Reorder sub-services
+// @route   PUT /api/admin/services/:id/reorder-subservices
+// @access  Private (Admin)
+export const reorderSubServices = async (req, res) => {
+    try {
+        const { subServices } = req.body;
+        const service = await Service.findById(req.params.id);
+
+        if (!service) {
+            return res.status(404).json({ message: 'Service not found' });
+        }
+
+        // We assume the frontend sends the full array of sub-services in the new order
+        // Ideally, we should validate that no data is lost, but for now we trust the admin input logic
+        service.subServices = subServices;
         await service.save();
 
         res.json(service);

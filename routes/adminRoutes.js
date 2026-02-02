@@ -23,7 +23,8 @@ import {
     createService,
     updateService,
     deleteService,
-    toggleServiceStatus
+    toggleServiceStatus,
+    reorderSubServices
 } from '../controller/serviceController.js';
 import {
     getAllThemes,
@@ -74,6 +75,7 @@ router.post('/services', protect, admin, createService);
 router.put('/services/:id', protect, admin, updateService);
 router.delete('/services/:id', protect, admin, deleteService);
 router.put('/services/:id/toggle', protect, admin, toggleServiceStatus);
+router.put('/services/:id/reorder-subservices', protect, admin, reorderSubServices);
 
 // Theme management routes
 router.get('/themes', protect, admin, getAllThemes);

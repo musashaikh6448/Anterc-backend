@@ -13,6 +13,10 @@ const subServiceSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    actualPrice: {
+        type: Number,
+        required: false
+    },
     imageUrl: {
         type: String,
         required: true

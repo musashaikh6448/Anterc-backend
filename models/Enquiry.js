@@ -55,6 +55,11 @@ const enquirySchema = new mongoose.Schema({
     invoiceUrl: {
         type: String,
         default: ''
+    },
+    bookedFor: {
+        type: String,
+        enum: ['myself', 'others'],
+        default: 'myself'
     }
 }, {
     timestamps: true
