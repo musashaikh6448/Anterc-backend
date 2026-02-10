@@ -251,22 +251,24 @@ export const updateAdmin = async (req, res) => {
             }
         }
 
-        const updateData = { name, phone };
-        if (password) {
-            updateData.password = password;
-        }
-
-        const user = await User.findByIdAndUpdate(
-            req.params.id,
-            updateData,
-            { new: true }
-        ).select('-password');
+        // Find the user first
+        const user = await User.findById(req.params.id);
 
         if (!user) {
             return res.status(404).json({ message: 'Admin not found' });
         }
 
-        res.json(user);
+        // Update fields
+        if (name) user.name = name;
+        if (phone) user.phone = phone;
+        if (password) user.password = password; // This will trigger the pre-save hook to hash the password
+
+        // Save the user (this triggers the pre-save middleware)
+        await user.save();
+
+        // Return user without password
+        const { password: _, ...userWithoutPassword } = user.toObject();
+        res.json(userWithoutPassword);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
