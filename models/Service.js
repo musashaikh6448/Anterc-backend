@@ -39,34 +39,7 @@ const subServiceSchema = new mongoose.Schema({
 const serviceSchema = new mongoose.Schema({
     category: {
         type: String,
-        required: true,
-        enum: [
-            'Air Conditioner',
-            'Electrician',
-            'Plumbing',
-            'Washing Machine',
-            'TV',
-            'Refrigerator',
-            'Deep Freezer',
-            'Ceiling & Table Fan',
-            'Water Purifier',
-            'Dishwasher',
-            'Dispenser',
-            'Visi Cooler',
-            'Water Cooler',
-            'Air Cooler',
-            'CCTV Camera',
-            'Computer & Laptop',
-            'Printer',
-            'Stabilizer',
-            'Chimneys',
-            'Microwave oven',
-            'Electric Induction',
-            'Geysers',
-            'Home theatre/ Sound box',
-            'Inverter Batteries',
-            'Vacuum cleaner'
-        ]
+        required: true
     },
     title: {
         type: String,
