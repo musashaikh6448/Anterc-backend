@@ -217,10 +217,6 @@ export const createAdmin = async (req, res) => {
     try {
         const userExists = await User.findOne({ phone });
 
-        if (userExists) {
-            return res.status(400).json({ message: 'User with this phone number already exists' });
-        }
-
         const user = await User.create({
             name,
             phone,
